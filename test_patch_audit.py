@@ -22,12 +22,13 @@ the table in the assignment.
 """
 
 import unittest
+import importlib
 
 try:
     import patch_audit as pa
 except ModuleNotFoundError:
     # the instructor copy of the program keeps its week06_ name
-    import week06_individual_patch_audit as pa
+    pa = importlib.import_module("week06_individual_patch_audit")
 
 
 class TestPatchLimit(unittest.TestCase):

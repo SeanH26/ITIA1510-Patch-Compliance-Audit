@@ -55,7 +55,13 @@ def patch_limit(criticality):
     """Return the number of days the policy allows: 14, 30 or 60."""
     # TODO 1
     #   Criticality 3 gets 14 days, criticality 2 gets 30, anything else 60.
-    return 0
+    if criticality == 3:
+        return 14
+    elif criticality == 2:
+        return 30
+    else:
+        return 60
+    
 
 
 def is_valid_record(days, criticality):
@@ -63,7 +69,10 @@ def is_valid_record(days, criticality):
     # TODO 2
     #   One return statement. Say the rule in English before writing it, and
     #   decide where it needs and, and where it needs or.
-    return False
+    if days >= 0 and criticality in [1,2,3]:
+        return True
+    else:
+        return False
 
 
 def patch_status(host, days, criticality, exempt):
@@ -73,14 +82,32 @@ def patch_status(host, days, criticality, exempt):
     #   contain the numbers 14, 30 or 60.
     #   The order of the branches matters. lab-sandbox-02 has a broken record
     #   AND a signed exception. The policy says which one wins.
-    return "INVALID"
+    if host in exempt:
+        return "EXEMPT"
+
+    isValid = is_valid_record(days,criticality)
+    if isValid == False:
+        return "INVALID"
+
+    theLimit = patch_limit(criticality)
+    if days <= theLimit:
+        return 'COMPLIANT'
+    elif days <= theLimit * 2:
+        return 'OVERDUE'
+
+    return 'CRITICAL'
 
 
 def days_overdue(days, criticality):
     """Return how many days past the limit a host is, or 0 when it is not."""
     # TODO 4
     #   Never return a negative number.
-    return 0
+
+    overLimit = days - theLimit
+    if overLimit < 0:
+        return 0
+    return overLimit
+    
 
 
 # ---------------------------------------------------------------------------
@@ -94,6 +121,12 @@ def build_statuses(hosts, days, crits, exempt):
     #   range(len(hosts)) and use the position to reach into all three.
     #   Append each status to a new list and return the list.
     #   Remember what append() returns before writing  x = x.append(y).
+    theStatus = []
+
+    for iPos in range(len(hosts)):
+        pStatus = patch_status(hosts[iPos],days[iPos],crits[iPos],exempt)
+        theStatus.append()
+
     return []
 
 
